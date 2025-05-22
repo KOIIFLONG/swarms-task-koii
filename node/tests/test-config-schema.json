@@ -1,0 +1,87 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "Distributed System Test Configuration Schema",
+    "description": "Configuration schema for test configurations across components",
+    "required": ["testType", "component", "version"],
+    "properties": {
+        "testType": {
+            "type": "string",
+            "enum": [
+                "unit", 
+                "integration", 
+                "end-to-end", 
+                "performance", 
+                "security"
+            ],
+            "description": "Type of test being configured"
+        },
+        "component": {
+            "type": "string",
+            "enum": [
+                "coordinator", 
+                "node", 
+                "orca-agent", 
+                "middle-server", 
+                "shared"
+            ],
+            "description": "System component being tested"
+        },
+        "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+            "description": "Semantic version of the test configuration"
+        },
+        "dependencies": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "version": {"type": "string"}
+                },
+                "required": ["name"]
+            },
+            "description": "External dependencies required for testing"
+        },
+        "testCases": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "description": {"type": "string"},
+                    "input": {"type": "object"},
+                    "expectedOutput": {"type": "object"},
+                    "priority": {
+                        "type": "string", 
+                        "enum": ["low", "medium", "high", "critical"]
+                    }
+                },
+                "required": ["name", "priority"]
+            },
+            "description": "Specific test cases to be executed"
+        },
+        "environmentConfig": {
+            "type": "object",
+            "properties": {
+                "nodeVersion": {"type": "string"},
+                "pythonVersion": {"type": "string"},
+                "requiredEnvVars": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            },
+            "description": "Environment-specific configuration for tests"
+        },
+        "performanceThresholds": {
+            "type": "object",
+            "properties": {
+                "maxExecutionTime": {"type": "number"},
+                "maxMemoryUsage": {"type": "number"},
+                "minThroughput": {"type": "number"}
+            },
+            "description": "Performance expectations for the test"
+        }
+    }
+}
